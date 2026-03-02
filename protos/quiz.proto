@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package quiz;
+
+service QuizService {
+  rpc CreateQuiz (CreateQuizRequest) returns (QuizResponse);
+  rpc GetQuiz (GetQuizRequest) returns (QuizResponse);
+  rpc ListQuizzes (Empty) returns (QuizListResponse);
+}
+
+message CreateQuizRequest {
+  string title = 1;
+  string description = 2;
+}
+
+message GetQuizRequest {
+  int32 id = 1;
+}
+
+message QuizResponse {
+  int32 id = 1;
+  string title = 2;
+  string description = 3;
+}
+
+message QuizListResponse {
+  repeated QuizResponse quizzes = 1;
+}
+
+message Empty {}

@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package auth;
+
+import "google/protobuf/empty.proto";
+
+service AuthService {
+    rpc Login (ValidateUserRequest) returns (GetUserResponse)
+    rpc Register (CreateUserRequest) returns (GetUserResponse)
+    rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse)
+    rpc ForgotPassword (ForgotPasswordRequest) returns (ForgotPasswordResponse)
+    rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse)
+}
+
+message ValidateUserRequest {
+  string email;
+  string password;
+}
+
+message GetUserResponse {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+}
+message ChangePasswordRequest {
+    string old_password = 1;
+    string new_password = 2;
+}
+message ChangePasswordResponse {
+    bool success = 1;
+}
+
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message ForgotPasswordResponse {
+  string reset_token = 1;
+}
+
+message ResetPasswordRequest {
+    string reset_token = 1;
+    string new_hash_password = 1;
+}
+
+message ResetPasswordResponse {
+    bool success = 1;
+}
