@@ -2,53 +2,37 @@ syntax = "proto3";
 
 package auth;
 
-import "google/protobuf/empty.proto";
-
 service AuthService {
-    rpc Login (ValidateUserRequest) returns (GetUserResponse)
-    rpc Register (CreateUserRequest) returns (GetUserResponse)
-    rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse)
-    rpc ForgotPassword (ForgotPasswordRequest) returns (ForgotPasswordResponse)
-    rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse)
+    rpc Register(RegisterRequest) returns (AuthResponse) {}
+    rpc Login(LoginRequest) returns (AuthResponse) {}
+    rpc ValidateToken(ValidateTokenRequest) returns (User) {}
+    rpc Authorize(AuthorizeRequest) returns (AuthorizeResponse) {}
 }
 
-message ValidateUserRequest {
-  string email;
-  string password;
+message RegisterRequest {
+    string username = 1;
+    string email = 2;
+    string password = 3;
 }
 
-message GetUserResponse {
-  int64 id = 1;
-  string name = 2;
-  string email = 3;
+message LoginRequest {
+    string email = 1;
+    string password = 2;
 }
 
-message CreateUserRequest {
-  string name = 1;
-  string email = 2;
-  string password = 3;
-}
-message ChangePasswordRequest {
-    string old_password = 1;
-    string new_password = 2;
-}
-message ChangePasswordResponse {
-    bool success = 1;
+message ValidateTokenRequest {
+    string token = 1;
 }
 
-message ForgotPasswordRequest {
-  string email = 1;
+message AuthResponse {
+    string token = 1;
+    User user = 3;
 }
 
-message ForgotPasswordResponse {
-  string reset_token = 1;
-}
-
-message ResetPasswordRequest {
-    string reset_token = 1;
-    string new_hash_password = 1;
-}
-
-message ResetPasswordResponse {
-    bool success = 1;
+message User {
+    int32 id = 1;
+    string username = 2;
+    string email = 3;
+    string role = 4;
+    string created_at = 5;
 }

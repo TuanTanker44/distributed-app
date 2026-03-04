@@ -1,4 +1,4 @@
-import UserService from "../services/user.service.js";
+import UserService from "../services/user-service.js";
 
 export default {
   GetUser: async (call, callback) => {
@@ -55,7 +55,7 @@ export default {
       });
     }
   },
-  ListUsers: async (call, callback) => {
+  GetAllUsers: async (call, callback) => {
     try {
       const users = await UserService.getAllUsers();
 

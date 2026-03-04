@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package admin;
+
+service AdminService {
+    // User management
+    rpc GetAllUsers(Empty) returns (UserList) {}
+    rpc UpdateUserRole(UpdateUserRoleRequest) returns (User) {}
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteResponse) {}
+    
+    // Subject management
+    rpc CreateSubject(Subject) returns (Subject) {}
+    rpc GetAllSubjects(Empty) returns (SubjectList) {}
+    rpc UpdateSubject(UpdateSubjectRequest) returns (Subject) {}
+    rpc DeleteSubject(DeleteSubjectRequest) returns (DeleteResponse) {}
+    
+    // Question management
+    rpc CreateQuestion(Question) returns (Question) {}
+    rpc GetAllQuestions(GetQuestionsRequest) returns (QuestionList) {}
+    rpc GetQuestionById(GetQuestionRequest) returns (Question) {}
+    rpc UpdateQuestion(Question) returns (Question) {}
+    rpc DeleteQuestion(DeleteQuestionRequest) returns (DeleteResponse) {}
+}
+
+message User {
+    int32 id = 1;
+    string username = 2;
+    string email = 3;
+    string role = 4;
+    string created_at = 5;
+    string updated_at = 6;
+}
+
+message UserList {
+    repeated User users = 1;
+}
+
+message UpdateUserRoleRequest {
+    int32 user_id = 1;
+    string role = 2;
+}
+
+message DeleteUserRequest {
+    int32 user_id = 1;
+}
+
+message Subject {
+    int32 id = 1;
+    string name = 2;
+    string description = 3;
+    string created_at = 4;
+}
+
+message SubjectList {
+    repeated Subject subjects = 1;
+}
+
+message UpdateSubjectRequest {
+    int32 id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message DeleteSubjectRequest {
+    int32 subject_id = 1;
+}
+
+message Question {
+    int32 id = 1;
+    int32 subject_id = 2;
+    string question_text = 3;
+    string option_a = 4;
+    string option_b = 5;
+    string option_c = 6;
+    string option_d = 7;
+    string correct_answer = 8;
+    string difficulty = 9;
+    int32 created_by = 10;
+    string created_at = 11;
+    string updated_at = 12;
+    int64 version = 13;
+}
+
+message QuestionList {
+    repeated Question questions = 1;
+}
+
+message GetQuestionsRequest {
+    int32 subject_id = 1;
+    string difficulty = 2;
+}
+
+message GetQuestionRequest {
+    int32 question_id = 1;
+}
+
+message DeleteQuestionRequest {
+    int32 question_id = 1;
+}
+
+message DeleteResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message Empty {}

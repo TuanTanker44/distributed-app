@@ -3,28 +3,101 @@ syntax = "proto3";
 package quiz;
 
 service QuizService {
-  rpc CreateQuiz (CreateQuizRequest) returns (QuizResponse);
-  rpc GetQuiz (GetQuizRequest) returns (QuizResponse);
-  rpc ListQuizzes (Empty) returns (QuizListResponse);
+    rpc CreateQuiz(CreateQuizRequest) returns (QuizSession) {}
+    rpc GetQuiz(GetQuizRequest) returns (QuizSession) {}
+    rpc SubmitAnswer(SubmitAnswerRequest) returns (AnswerResult) {}
+    rpc CompleteQuiz(CompleteQuizRequest) returns (QuizResult) {}
+    rpc GetQuizHistory(GetQuizHistoryRequest) returns (QuizHistoryList) {}
+    rpc GetAvailableSubjects(Empty) returns (SubjectList) {}
 }
 
 message CreateQuizRequest {
-  string title = 1;
-  string description = 2;
+    int32 user_id = 1;
+    int32 subject_id = 2;
+    string difficulty = 3;
+    int32 total_questions = 4;
+    int32 time_limit = 5;
 }
 
 message GetQuizRequest {
-  int32 id = 1;
+    int32 session_id = 1;
+    int32 user_id = 2;
 }
 
-message QuizResponse {
-  int32 id = 1;
-  string title = 2;
-  string description = 3;
+message SubmitAnswerRequest {
+    int32 session_id = 1;
+    int32 user_id = 2;
+    int32 question_id = 3;
+    string answer = 4;
 }
 
-message QuizListResponse {
-  repeated QuizResponse quizzes = 1;
+message CompleteQuizRequest {
+    int32 session_id = 1;
+    int32 user_id = 2;
+}
+
+message GetQuizHistoryRequest {
+    int32 user_id = 1;
+}
+
+message QuizSession {
+    int32 id = 1;
+    int32 user_id = 2;
+    int32 subject_id = 3;
+    string subject_name = 4;
+    int32 total_questions = 5;
+    int32 time_limit_minutes = 6;
+    string difficulty = 7;
+    string status = 8;
+    string started_at = 9;
+    string expires_at = 10;
+    repeated Question questions = 11;
+}
+
+message Question {
+    int32 id = 1;
+    string question_text = 2;
+    map<string, string> options = 3;
+    int32 order_number = 4;
+    string user_answer = 5;
+    bool is_correct = 6;
+}
+
+message AnswerResult {
+    bool is_correct = 1;
+    string correct_answer = 2;
+    string message = 3;
+}
+
+message QuizResult {
+    int32 session_id = 1;
+    int32 total_questions = 2;
+    int32 correct_answers = 3;
+    float score_percentage = 4;
+    string completed_at = 5;
+}
+
+message QuizHistoryList {
+    repeated QuizHistoryItem history = 1;
+}
+
+message QuizHistoryItem {
+    int32 session_id = 1;
+    string subject_name = 2;
+    int32 total_questions = 3;
+    int32 correct_answers = 4;
+    float score_percentage = 5;
+    string completed_at = 6;
+}
+
+message Subject {
+    int32 id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message SubjectList {
+    repeated Subject subjects = 1;
 }
 
 message Empty {}
