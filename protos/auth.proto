@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package auth;
 
+import "common.proto";
+
 service AuthService {
     rpc Register(RegisterRequest) returns (AuthResponse) {}
     rpc Login(LoginRequest) returns (AuthResponse) {}
-    rpc ValidateToken(ValidateTokenRequest) returns (User) {}
-    rpc Authorize(AuthorizeRequest) returns (AuthorizeResponse) {}
 }
 
 message RegisterRequest {
@@ -20,19 +20,15 @@ message LoginRequest {
     string password = 2;
 }
 
-message ValidateTokenRequest {
-    string token = 1;
-}
-
 message AuthResponse {
-    string token = 1;
+    string access_token = 1;
     User user = 3;
 }
 
 message User {
-    int32 id = 1;
+    int32 user_id = 1;
     string username = 2;
     string email = 3;
-    string role = 4;
+    common.UserRole role = 4;
     string created_at = 5;
 }

@@ -1,26 +1,43 @@
-import { loadPackageDefinition } from "@grpc/grpc-js";
 import grpc from "@grpc/grpc-js";
 import { loadSync } from "@grpc/proto-loader";
+import { loadPackageDefinition } from "@grpc/grpc-js";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import userHandler from "./handlers/user.handler.js";
+import path from "path";
+import { AdminService } from "./services/admin-service.js";
+import { AuthService } from "./services/auth-service.js";
+import { UserService } from "./services/user-service.js";
+import { QuizService } from "./services/quiz-service.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const packageDefinition = loadSync(join(__dirname, "../protos/admin.proto"), {
-  keepCase: true,
-  longs: String,
-  enums: String,
-  defaults: true,
-  oneofs: true,
-});
+const packageDefinition = loadSync(
+  [
+    path.join(__dirname, "../protos/admin.proto"),
+    path.join(__dirname, "../protos/auth.proto"),
+    path.join(__dirname, "../protos/user.proto"),
+    path.join(__dirname, "../protos/quiz.proto"),
+  ],
+  {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true,
+  },
+);
 
-const adminProto = loadPackageDefinition(packageDefinition).admin;
+const proto = loadPackageDefinition(packageDefinition);
+
+const adminProto = proto.admin;
 
 const server = new grpc.Server();
 
-server.addService(adminProto.AdminService.service, userHandler);
+server.addService(adminProto.AdminService.service, AdminService);
+server.addService(proto.auth.AuthService.service, AuthService);
+server.addService(proto.user.UserService.service, UserService);
+server.addService(proto.quiz.QuizService.service, QuizService);
 
 export default function startGrpcServer() {
   server.bindAsync(

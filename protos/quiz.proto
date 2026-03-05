@@ -4,11 +4,9 @@ package quiz;
 
 service QuizService {
     rpc CreateQuiz(CreateQuizRequest) returns (QuizSession) {}
-    rpc GetQuiz(GetQuizRequest) returns (QuizSession) {}
-    rpc SubmitAnswer(SubmitAnswerRequest) returns (AnswerResult) {}
+    rpc GetQuizSession(GetQuizSessionRequest) returns (QuizSession) {}
+    rpc SubmitAnswer(SubmitAnswerRequest) returns (SubmitAnswerResponse) {}
     rpc CompleteQuiz(CompleteQuizRequest) returns (QuizResult) {}
-    rpc GetQuizHistory(GetQuizHistoryRequest) returns (QuizHistoryList) {}
-    rpc GetAvailableSubjects(Empty) returns (SubjectList) {}
 }
 
 message CreateQuizRequest {
@@ -16,10 +14,10 @@ message CreateQuizRequest {
     int32 subject_id = 2;
     string difficulty = 3;
     int32 total_questions = 4;
-    int32 time_limit = 5;
+    int32 time_limit_minutes = 5;
 }
 
-message GetQuizRequest {
+message GetQuizSessionRequest {
     int32 session_id = 1;
     int32 user_id = 2;
 }
@@ -63,7 +61,7 @@ message Question {
     bool is_correct = 6;
 }
 
-message AnswerResult {
+message SubmitAnswerResponse {
     bool is_correct = 1;
     string correct_answer = 2;
     string message = 3;
