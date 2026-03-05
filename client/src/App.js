@@ -7,21 +7,35 @@ import UserLayout from "./pages/user/UserLayout";
 import CreateQuiz from "./pages/user/CreateQuiz";
 import QuizPage from "./pages/user/QuizPage";
 import History from "./pages/user/History";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="users" element={<UserManager />} />
-          <Route path="questions" element={<QuestionManager />} />
-        </Route>
-        <Route path="/user" element={<UserLayout />}>
-          <Route index element={<CreateQuiz />} />
-          <Route path="quiz" element={<QuizPage />} />
-          <Route path="history" element={<History />} />
-        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Routes>
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<Dashboard />} />
+                  <Route path="users" element={<UserManager />} />
+                  <Route path="questions" element={<QuestionManager />} />
+                </Route>
+                <Route path="/user" element={<UserLayout />}>
+                  <Route index element={<CreateQuiz />} />
+                  <Route path="quiz" element={<QuizPage />} />
+                  <Route path="history" element={<History />} />
+                </Route>
+              </Routes>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

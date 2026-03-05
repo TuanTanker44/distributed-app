@@ -27,7 +27,7 @@ export const AuthService = {
       });
     } catch (err) {
       callback({
-        code: status.INTERNAL,
+        code: err.code,
         message: err.message,
       });
     }
@@ -36,9 +36,10 @@ export const AuthService = {
     const { email, password } = call.request;
 
     try {
-      const result = await pool.query(`SELECT * FROM users WHERE email = $1`, [
-        email,
-      ]);
+      const result = await pool.query(
+        `SELECT * FROM users WHERE email = $1 OR username = $1 LIMIT 1`,
+        [email],
+      );
 
       if (result.rowCount === 0) {
         return callback({
@@ -62,7 +63,7 @@ export const AuthService = {
       callback(null, {
         access_token: accessToken,
         user: {
-          id: user.id,
+          user_id: user.id,
           email: user.email,
           username: user.username,
           role: user.role,
@@ -70,7 +71,7 @@ export const AuthService = {
       });
     } catch (err) {
       callback({
-        code: status.INTERNAL,
+        code: err.code,
         message: err.message,
       });
     }

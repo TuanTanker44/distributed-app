@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "jsonwebtoken": "^9.0.3"
+    "dotenv": "^17.3.1"
   }
 }
