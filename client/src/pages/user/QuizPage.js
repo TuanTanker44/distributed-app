@@ -4,26 +4,26 @@ import { useState, useEffect } from "react";
 function QuizPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const filters = location.state;
+  const filters = location.state.filters;
 
   const questions = [
     {
       id: 1,
       content: "React là gì?",
       options: ["Thư viện", "Ngôn ngữ", "Hệ điều hành"],
-      correct: "Thư viện"
+      correct: "Thư viện",
     },
     {
       id: 2,
       content: "useState dùng để làm gì?",
       options: ["Quản lý state", "Gọi API", "CSS"],
-      correct: "Quản lý state"
-    }
+      correct: "Quản lý state",
+    },
   ];
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(filters?.time * 60 || 600);
+  const [timeLeft, setTimeLeft] = useState(filters?.time * 60);
   const [finished, setFinished] = useState(false);
 
   // Timer
@@ -34,7 +34,7 @@ function QuizPage() {
     }
 
     const timer = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
+      setTimeLeft((prev) => prev - 1);
     }, 1000);
 
     return () => clearInterval(timer);
@@ -71,9 +71,7 @@ function QuizPage() {
         <h3>
           Điểm: {calculateScore()} / {questions.length}
         </h3>
-        <button onClick={() => navigate("/user/history")}>
-          Xem lịch sử
-        </button>
+        <button onClick={() => navigate("/user/history")}>Xem lịch sử</button>
       </div>
     );
   }
@@ -92,7 +90,7 @@ function QuizPage() {
           <div
             style={{
               ...styles.progress,
-              width: `${((currentQuestion + 1) / questions.length) * 100}%`
+              width: `${((currentQuestion + 1) / questions.length) * 100}%`,
             }}
           />
         </div>
@@ -107,13 +105,8 @@ function QuizPage() {
               style={{
                 ...styles.optionBtn,
                 backgroundColor:
-                  answers[currentQuestion] === opt
-                    ? "#3498db"
-                    : "#ecf0f1",
-                color:
-                  answers[currentQuestion] === opt
-                    ? "white"
-                    : "black"
+                  answers[currentQuestion] === opt ? "#3498db" : "#ecf0f1",
+                color: answers[currentQuestion] === opt ? "white" : "black",
               }}
             >
               {opt}
@@ -146,56 +139,56 @@ const styles = {
   container: {
     display: "flex",
     justifyContent: "center",
-    paddingTop: "30px"
+    paddingTop: "30px",
   },
   card: {
     width: "600px",
     backgroundColor: "white",
     padding: "25px",
     borderRadius: "10px",
-    boxShadow: "0 5px 15px rgba(0,0,0,0.1)"
+    boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
   },
   header: {
     display: "flex",
     justifyContent: "space-between",
-    marginBottom: "10px"
+    marginBottom: "10px",
   },
   timer: {
     color: "#e74c3c",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   progressBar: {
     height: "8px",
     backgroundColor: "#ecf0f1",
     borderRadius: "5px",
-    marginBottom: "15px"
+    marginBottom: "15px",
   },
   progress: {
     height: "100%",
     backgroundColor: "#3498db",
-    borderRadius: "5px"
+    borderRadius: "5px",
   },
   options: {
     display: "flex",
     flexDirection: "column",
     gap: "10px",
-    marginTop: "15px"
+    marginTop: "15px",
   },
   optionBtn: {
     padding: "10px",
     borderRadius: "6px",
     border: "none",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   navButtons: {
     marginTop: "20px",
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   result: {
     textAlign: "center",
-    marginTop: "50px"
-  }
+    marginTop: "50px",
+  },
 };
 
 export default QuizPage;

@@ -22,6 +22,51 @@ async function getSubjects() {
   return { subjects: subjectNames };
 }
 
+async function CreateQuizSession(filters) {
+  const accessToken = localStorage.getItem("access_token");
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const subjectRes = await fetch(
+    `http://localhost:3030/api/user/subjects/${filters.subject}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+
+  const subjectData = await subjectRes.json();
+  if (!subjectRes.ok) {
+    throw new Error(subjectData.message || "Failed to fetch subject details");
+  }
+
+  const createQuizRequest = {
+    user_id: user.user_id,
+    subject_id: subjectData.id,
+    difficulty: filters.difficulty,
+    total_questions: filters.questionCount,
+    time_limit_minutes: filters.time,
+  };
+
+  const res = await fetch("http://localhost:3030/api/quiz", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(createQuizRequest),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to create quiz session");
+  }
+
+  return data;
+}
+
 function CreateQuiz() {
   const navigate = useNavigate();
 
@@ -39,7 +84,6 @@ function CreateQuiz() {
     getSubjects().then((data) => setSubjectNames(data.subjects));
   }, []);
 
-  console.log(subjectNames);
   const handleChange = (e) => {
     setFilters({
       ...filters,
@@ -47,14 +91,20 @@ function CreateQuiz() {
     });
   };
 
-  const handleStart = () => {
+  const handleStart = async () => {
     if (!filters.subject || !filters.difficulty) {
       setError("Vui lòng chọn đầy đủ môn học và độ khó!");
       return;
     }
 
+    const data = await CreateQuizSession(filters);
+    console.log(data);
+    const questions = data.questions;
+    console.log(questions);
+    console.log(filters);
+
     setError("");
-    navigate("/user/quiz", { state: filters });
+    navigate("/user/quiz", { state: { filters, questions } });
   };
 
   return (

@@ -13,6 +13,7 @@ async function register(username, email, password) {
   const data = await res.json();
 
   localStorage.setItem("access_token", data.access_token);
+  localStorage.setItem("user", JSON.stringify(data.user));
 }
 
 export default function Register() {

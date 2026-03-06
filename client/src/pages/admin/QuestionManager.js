@@ -1,4 +1,4 @@
-<<<<<<< HEAD:client/src/page/admin/QuestionManager.js
+// <<<<<<< HEAD:client/src/page/admin/QuestionManager.js
 import { useState } from "react";
 
 function QuestionManager() {
@@ -16,8 +16,8 @@ function QuestionManager() {
       created_by: 1,
       created_at: new Date().toLocaleString(),
       updated_at: new Date().toLocaleString(),
-      version: "0"
-    }
+      version: "0",
+    },
   ]);
 
   const [showModal, setShowModal] = useState(false);
@@ -31,7 +31,7 @@ function QuestionManager() {
     option_c: "",
     option_d: "",
     correct_answer: "A",
-    difficulty: "easy"
+    difficulty: "easy",
   });
 
   const handleSave = () => {
@@ -39,21 +39,19 @@ function QuestionManager() {
 
     if (editId) {
       setQuestions(
-        questions.map(q =>
+        questions.map((q) =>
           q.id === editId
             ? {
                 ...q,
                 ...newQuestion,
-                updated_at: new Date().toLocaleString()
+                updated_at: new Date().toLocaleString(),
               }
-            : q
-        )
+            : q,
+        ),
       );
     } else {
       const newId =
-        questions.length > 0
-          ? Math.max(...questions.map(q => q.id)) + 1
-          : 1;
+        questions.length > 0 ? Math.max(...questions.map((q) => q.id)) + 1 : 1;
 
       const now = new Date().toLocaleString();
 
@@ -65,8 +63,8 @@ function QuestionManager() {
           version: "0",
           created_at: now,
           updated_at: now,
-          ...newQuestion
-        }
+          ...newQuestion,
+        },
       ]);
     }
 
@@ -80,15 +78,15 @@ function QuestionManager() {
       option_c: "",
       option_d: "",
       correct_answer: "A",
-      difficulty: "easy"
+      difficulty: "easy",
     });
   };
 
-  const handleDelete = id => {
-    setQuestions(questions.filter(q => q.id !== id));
+  const handleDelete = (id) => {
+    setQuestions(questions.filter((q) => q.id !== id));
   };
 
-  const handleEdit = q => {
+  const handleEdit = (q) => {
     setEditId(q.id);
     setNewQuestion(q);
     setShowModal(true);
@@ -113,7 +111,7 @@ function QuestionManager() {
           </tr>
         </thead>
         <tbody>
-          {questions.map(q => (
+          {questions.map((q) => (
             <tr key={q.id}>
               <td>{q.id}</td>
               <td>{q.question_text}</td>
@@ -123,7 +121,10 @@ function QuestionManager() {
                 <button style={styles.editBtn} onClick={() => handleEdit(q)}>
                   Sửa
                 </button>
-                <button style={styles.deleteBtn} onClick={() => handleDelete(q.id)}>
+                <button
+                  style={styles.deleteBtn}
+                  onClick={() => handleDelete(q.id)}
+                >
                   Xóa
                 </button>
               </td>
@@ -141,7 +142,7 @@ function QuestionManager() {
               style={styles.input}
               placeholder="Subject ID"
               value={newQuestion.subject_id}
-              onChange={e =>
+              onChange={(e) =>
                 setNewQuestion({ ...newQuestion, subject_id: e.target.value })
               }
             />
@@ -150,8 +151,11 @@ function QuestionManager() {
               style={styles.input}
               placeholder="Nội dung câu hỏi"
               value={newQuestion.question_text}
-              onChange={e =>
-                setNewQuestion({ ...newQuestion, question_text: e.target.value })
+              onChange={(e) =>
+                setNewQuestion({
+                  ...newQuestion,
+                  question_text: e.target.value,
+                })
               }
             />
 
@@ -159,7 +163,7 @@ function QuestionManager() {
               style={styles.input}
               placeholder="Option A"
               value={newQuestion.option_a}
-              onChange={e =>
+              onChange={(e) =>
                 setNewQuestion({ ...newQuestion, option_a: e.target.value })
               }
             />
@@ -168,7 +172,7 @@ function QuestionManager() {
               style={styles.input}
               placeholder="Option B"
               value={newQuestion.option_b}
-              onChange={e =>
+              onChange={(e) =>
                 setNewQuestion({ ...newQuestion, option_b: e.target.value })
               }
             />
@@ -177,7 +181,7 @@ function QuestionManager() {
               style={styles.input}
               placeholder="Option C"
               value={newQuestion.option_c}
-              onChange={e =>
+              onChange={(e) =>
                 setNewQuestion({ ...newQuestion, option_c: e.target.value })
               }
             />
@@ -186,7 +190,7 @@ function QuestionManager() {
               style={styles.input}
               placeholder="Option D"
               value={newQuestion.option_d}
-              onChange={e =>
+              onChange={(e) =>
                 setNewQuestion({ ...newQuestion, option_d: e.target.value })
               }
             />
@@ -194,8 +198,11 @@ function QuestionManager() {
             <select
               style={styles.input}
               value={newQuestion.correct_answer}
-              onChange={e =>
-                setNewQuestion({ ...newQuestion, correct_answer: e.target.value })
+              onChange={(e) =>
+                setNewQuestion({
+                  ...newQuestion,
+                  correct_answer: e.target.value,
+                })
               }
             >
               <option value="A">Đáp án A</option>
@@ -207,7 +214,7 @@ function QuestionManager() {
             <select
               style={styles.input}
               value={newQuestion.difficulty}
-              onChange={e =>
+              onChange={(e) =>
                 setNewQuestion({ ...newQuestion, difficulty: e.target.value })
               }
             >
@@ -220,7 +227,10 @@ function QuestionManager() {
               <button style={styles.saveBtn} onClick={handleSave}>
                 Lưu
               </button>
-              <button style={styles.cancelBtn} onClick={() => setShowModal(false)}>
+              <button
+                style={styles.cancelBtn}
+                onClick={() => setShowModal(false)}
+              >
                 Hủy
               </button>
             </div>
@@ -240,12 +250,12 @@ const styles = {
     border: "none",
     borderRadius: "6px",
     marginBottom: "20px",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   editBtn: {
     backgroundColor: "#3498db",
@@ -253,14 +263,14 @@ const styles = {
     border: "none",
     padding: "5px 10px",
     marginRight: "5px",
-    borderRadius: "4px"
+    borderRadius: "4px",
   },
   deleteBtn: {
     backgroundColor: "#e74c3c",
     color: "white",
     border: "none",
     padding: "5px 10px",
-    borderRadius: "4px"
+    borderRadius: "4px",
   },
   overlay: {
     position: "fixed",
@@ -271,207 +281,18 @@ const styles = {
     backgroundColor: "rgba(0,0,0,0.4)",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   modal: {
     backgroundColor: "white",
     padding: "20px",
     borderRadius: "10px",
-    width: "500px"
+    width: "500px",
   },
   input: {
     width: "100%",
     padding: "8px",
-    marginTop: "10px"
-  },
-  saveBtn: {
-    backgroundColor: "#27ae60",
-    color: "white",
-    border: "none",
-    padding: "8px 12px",
-    marginRight: "10px",
-    borderRadius: "5px"
-  },
-  cancelBtn: {
-    backgroundColor: "gray",
-    color: "white",
-    border: "none",
-    padding: "8px 12px",
-    borderRadius: "5px"
-  }
-};
-
-=======
-import { useState } from "react";
-
-function QuestionManager() {
-  const [questions, setQuestions] = useState([
-    { id: 1, content: "React là gì?", level: "Dễ" },
-    { id: 2, content: "useState dùng để làm gì?", level: "Trung bình" }
-  ]);
-
-  const [showModal, setShowModal] = useState(false);
-  const [newQuestion, setNewQuestion] = useState({
-    content: "",
-    level: "Dễ"
-  });
-
-  const [editId, setEditId] = useState(null);
-
-  // Thêm hoặc cập nhật câu hỏi
-  const handleSave = () => {
-    if (!newQuestion.content) return;
-
-    if (editId) {
-      setQuestions(
-        questions.map(q =>
-          q.id === editId ? { ...q, ...newQuestion } : q
-        )
-      );
-    } else {
-      const newId = questions.length + 1;
-      setQuestions([...questions, { id: newId, ...newQuestion }]);
-    }
-
-    setShowModal(false);
-    setNewQuestion({ content: "", level: "Dễ" });
-    setEditId(null);
-  };
-
-  const handleDelete = (id) => {
-    setQuestions(questions.filter(q => q.id !== id));
-  };
-
-  const handleEdit = (q) => {
-    setEditId(q.id);
-    setNewQuestion({ content: q.content, level: q.level });
-    setShowModal(true);
-  };
-
-  return (
-    <div>
-      <h1>📚 Quản lý Câu hỏi</h1>
-
-      <button style={styles.addBtn} onClick={() => setShowModal(true)}>
-        + Thêm Câu hỏi
-      </button>
-
-      <table style={styles.table}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nội dung</th>
-            <th>Mức độ</th>
-            <th>Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          {questions.map(q => (
-            <tr key={q.id}>
-              <td>{q.id}</td>
-              <td>{q.content}</td>
-              <td>{q.level}</td>
-              <td>
-                <button style={styles.editBtn} onClick={() => handleEdit(q)}>Sửa</button>
-                <button style={styles.deleteBtn} onClick={() => handleDelete(q.id)}>Xóa</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Modal */}
-      {showModal && (
-        <div style={styles.modalOverlay}>
-          <div style={styles.modal}>
-            <h3>{editId ? "Chỉnh sửa" : "Thêm"} Câu hỏi</h3>
-
-            <input
-              type="text"
-              placeholder="Nhập nội dung câu hỏi"
-              value={newQuestion.content}
-              onChange={(e) =>
-                setNewQuestion({ ...newQuestion, content: e.target.value })
-              }
-              style={styles.input}
-            />
-
-            <select
-              value={newQuestion.level}
-              onChange={(e) =>
-                setNewQuestion({ ...newQuestion, level: e.target.value })
-              }
-              style={styles.input}
-            >
-              <option>Dễ</option>
-              <option>Trung bình</option>
-              <option>Khó</option>
-            </select>
-
-            <div style={{ marginTop: "15px" }}>
-              <button style={styles.saveBtn} onClick={handleSave}>Lưu</button>
-              <button style={styles.cancelBtn} onClick={() => setShowModal(false)}>Hủy</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-const styles = {
-  addBtn: {
-    padding: "10px 15px",
-    backgroundColor: "#2ecc71",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    marginBottom: "15px"
-  },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    backgroundColor: "white"
-  },
-  editBtn: {
-    backgroundColor: "#3498db",
-    color: "white",
-    border: "none",
-    padding: "5px 10px",
-    marginRight: "5px",
-    borderRadius: "4px",
-    cursor: "pointer"
-  },
-  deleteBtn: {
-    backgroundColor: "#e74c3c",
-    color: "white",
-    border: "none",
-    padding: "5px 10px",
-    borderRadius: "4px",
-    cursor: "pointer"
-  },
-  modalOverlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  modal: {
-    backgroundColor: "white",
-    padding: "20px",
-    borderRadius: "10px",
-    width: "400px"
-  },
-  input: {
-    width: "100%",
-    padding: "8px",
-    marginTop: "10px"
+    marginTop: "10px",
   },
   saveBtn: {
     backgroundColor: "#27ae60",
@@ -480,7 +301,6 @@ const styles = {
     padding: "8px 12px",
     marginRight: "10px",
     borderRadius: "5px",
-    cursor: "pointer"
   },
   cancelBtn: {
     backgroundColor: "gray",
@@ -488,9 +308,7 @@ const styles = {
     border: "none",
     padding: "8px 12px",
     borderRadius: "5px",
-    cursor: "pointer"
-  }
+  },
 };
 
->>>>>>> bb47c3f139b0815a21706be3c0a8a9239e2acd60:client/src/pages/admin/QuestionManager.js
 export default QuestionManager;

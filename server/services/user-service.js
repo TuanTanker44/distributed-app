@@ -96,14 +96,14 @@ export const UserService = {
   },
 
   async GetSubjectDetail(call, callback) {
-    const { subject_id } = call.request;
+    const { subject_name } = call.request;
 
     try {
       const result = await pool.query(
         `SELECT id,name,description
          FROM subjects
-         WHERE id=$1`,
-        [subject_id],
+         WHERE LOWER(name) = LOWER($1)`,
+        [subject_name],
       );
 
       if (result.rows.length === 0) {

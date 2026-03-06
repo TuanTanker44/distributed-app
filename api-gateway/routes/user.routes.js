@@ -125,12 +125,12 @@ router.get(
 
 // GET subject detail
 router.get(
-  "/subjects/:subjectId",
+  "/subjects/:subjectName",
   authenticate,
   authorize("USER", "ADMIN"),
   (req, res) => {
     const request = {
-      subject_id: parseInt(req.params.subjectId),
+      subject_name: req.params.subjectName,
     };
 
     userClient.GetSubjectDetail(request, (err, response) => {

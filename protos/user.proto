@@ -65,7 +65,7 @@ message SubjectListResponse {
 }
 
 message GetSubjectRequest {
-  int32 subject_id = 1;
+  string subject_name = 1;
 }
 
 // Quiz history
