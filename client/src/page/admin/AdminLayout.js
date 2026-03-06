@@ -1,6 +1,18 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 function AdminLayout() {
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Xóa token hoặc user
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    // chuyển về login va xóa lịch sử
+    navigate("/login");
+  };
+
   return (
     <div style={styles.container}>
       
@@ -10,7 +22,7 @@ function AdminLayout() {
 
         <nav>
           <NavLink to="/admin" end style={styles.link}>
-            📊 Dashboard
+            📊 DDDashboard
           </NavLink>
 
           <NavLink to="/admin/users" style={styles.link}>
@@ -21,17 +33,20 @@ function AdminLayout() {
             ❓ Quản lý Câu hỏi
           </NavLink>
         </nav>
+
+        {/* Logout button */}
+        <button style={styles.logoutBtn} onClick={handleLogout}>
+          🚪 Đăng xuất
+        </button>
       </div>
 
-      {/* Main Area */}
+      {/* Main */}
       <div style={styles.main}>
-        {/* Header */}
         <div style={styles.header}>
           <h3>Admin Dashboard</h3>
           <div>Xin chào, Admin 👋</div>
         </div>
 
-        {/* Content */}
         <div style={styles.content}>
           <Outlet />
         </div>
@@ -44,19 +59,23 @@ const styles = {
   container: {
     display: "flex",
     height: "100vh",
-    fontFamily: "Arial, sans-serif"
+    fontFamily: "Arial"
   },
+
   sidebar: {
     width: "250px",
     background: "linear-gradient(180deg, #1e3c72, #2a5298)",
     color: "white",
     padding: "20px",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    justifyContent: "space-between"
   },
+
   logo: {
     marginBottom: "30px"
   },
+
   link: ({ isActive }) => ({
     display: "block",
     padding: "12px 15px",
@@ -64,15 +83,26 @@ const styles = {
     borderRadius: "8px",
     textDecoration: "none",
     color: "white",
-    backgroundColor: isActive ? "rgba(255,255,255,0.2)" : "transparent",
-    transition: "0.3s"
+    backgroundColor: isActive ? "rgba(255,255,255,0.2)" : "transparent"
   }),
+
+  logoutBtn: {
+    marginTop: "auto",
+    padding: "12px",
+    backgroundColor: "#e74c3c",
+    border: "none",
+    color: "white",
+    borderRadius: "8px",
+    cursor: "pointer"
+  },
+
   main: {
     flex: 1,
     backgroundColor: "#f4f6f9",
     display: "flex",
     flexDirection: "column"
   },
+
   header: {
     height: "60px",
     backgroundColor: "white",
@@ -82,6 +112,7 @@ const styles = {
     padding: "0 20px",
     boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
   },
+
   content: {
     padding: "20px",
     flex: 1,
