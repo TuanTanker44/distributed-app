@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../../css/auth.css";
+import { useNavigate } from "react-router-dom";
 
 async function login(email, password) {
   const res = await fetch("http://localhost:3030/api/auth/login", {
@@ -11,8 +12,9 @@ async function login(email, password) {
   });
 
   const data = await res.json();
-
   localStorage.setItem("access_token", data.access_token);
+
+  return data.user.role;
 }
 
 export default function Login() {
@@ -20,7 +22,9 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!identifier || !password) {
@@ -34,7 +38,12 @@ export default function Login() {
     });
 
     // gọi grpc login ở đây
-    login(identifier, password);
+    const role = await login(identifier, password);
+    if (role === "ADMIN") {
+      navigate("/admin");
+    } else {
+      navigate("/user");
+    }
   };
 
   return (

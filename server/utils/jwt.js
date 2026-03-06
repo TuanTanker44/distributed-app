@@ -7,7 +7,7 @@ const { sign, verify } = jwt;
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
-const ACCESS_EXPIRES = "15m";
+const ACCESS_EXPIRES = "1d";
 const REFRESH_EXPIRES = "7d";
 
 function generateAccessToken(user) {

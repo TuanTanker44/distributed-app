@@ -1,4 +1,5 @@
 import express from "express";
+import { status } from "@grpc/grpc-js";
 import { quizClient } from "../grpc/clients.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/role.middleware.js";

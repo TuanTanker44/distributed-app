@@ -50,7 +50,7 @@ export const QuizService = {
       const sessionRes = await pool.query(
         `INSERT INTO quiz_sessions
         (user_id, subject_id, difficulty, total_questions, time_limit_minutes, status, started_at, expires_at)
-        VALUES ($1,$2,$3,$4,$5,'active',NOW(), NOW() + ($5 || ' minutes')::interval)
+        VALUES ($1,$2,$3,$4,$5,'in_progress',NOW(), NOW() + ($5::integer * INTERVAL '1 minute'))
         RETURNING *`,
         [user_id, subject_id, difficulty, total_questions, time_limit_minutes],
       );
@@ -58,14 +58,15 @@ export const QuizService = {
       const session = sessionRes.rows[0];
 
       // lưu questions vào session
-      for (let i = 0; i < questions.length; i++) {
-        await pool.query(
-          `INSERT INTO quiz_session_questions
-           (session_id, question_id, order_number)
-           VALUES ($1,$2,$3)`,
-          [session.id, questions[i].id, i + 1],
-        );
-      }
+      const values = questions
+        .map((q, i) => `(${session.id}, ${q.id}, ${i + 1})`)
+        .join(",");
+
+      await pool.query(`
+      INSERT INTO quiz_questions
+        (quiz_session_id, question_id, order_number)
+        VALUES ${values}
+      `);
 
       const formattedQuestions = questions.map((q, index) => ({
         id: q.id,
@@ -87,7 +88,7 @@ export const QuizService = {
         total_questions,
         time_limit_minutes,
         difficulty,
-        status: "active",
+        status: "in_progress",
         started_at: session.started_at.toISOString(),
         expires_at: session.expires_at.toISOString(),
         questions: formattedQuestions,
@@ -102,7 +103,7 @@ export const QuizService = {
 
   // GET QUIZ SESSION
   async GetQuizSession(call, callback) {
-    const { session_id, user_id } = call.request;
+    const { quiz_session_id, user_id } = call.request;
 
     try {
       const sessionRes = await pool.query(
@@ -110,7 +111,7 @@ export const QuizService = {
          FROM quiz_sessions qs
          JOIN subjects s ON qs.subject_id=s.id
          WHERE qs.id=$1 AND qs.user_id=$2`,
-        [session_id, user_id],
+        [quiz_session_id, user_id],
       );
 
       if (sessionRes.rowCount === 0) {
@@ -137,14 +138,14 @@ export const QuizService = {
 
       const questionsRes = await pool.query(
         `SELECT q.*, qsq.order_number, qa.user_answer, qa.is_correct
-         FROM quiz_session_questions qsq
+         FROM quiz_questions qsq
          JOIN questions q ON q.id=qsq.question_id
          LEFT JOIN quiz_answers qa
          ON qa.session_id=qsq.session_id
          AND qa.question_id=qsq.question_id
-         WHERE qsq.session_id=$1
+         WHERE qsq.quiz_session_id=$1
          ORDER BY qsq.order_number`,
-        [session_id],
+        [quiz_session_id],
       );
 
       const questions = questionsRes.rows.map((q) => ({
@@ -184,13 +185,13 @@ export const QuizService = {
 
   // SUBMIT ANSWER
   async SubmitAnswer(call, callback) {
-    const { session_id, user_id, question_id, answer } = call.request;
+    const { quiz_session_id, user_id, question_id, answer } = call.request;
 
     try {
       const sessionRes = await pool.query(
         `SELECT * FROM quiz_sessions
        WHERE id=$1 AND user_id=$2`,
-        [session_id, user_id],
+        [quiz_session_id, user_id],
       );
 
       if (sessionRes.rowCount === 0) {
@@ -238,11 +239,11 @@ export const QuizService = {
       // save answer
       await pool.query(
         `INSERT INTO quiz_answers
-       (session_id, question_id, user_answer, is_correct)
+       (quiz_session_id, question_id, user_answer, is_correct)
        VALUES ($1,$2,$3,$4)
-       ON CONFLICT (session_id, question_id)
+       ON CONFLICT (quiz_session_id, question_id)
        DO UPDATE SET user_answer=$3, is_correct=$4`,
-        [session_id, question_id, answer, isCorrect],
+        [quiz_session_id, question_id, answer, isCorrect],
       );
 
       callback(null, {
@@ -257,7 +258,7 @@ export const QuizService = {
 
   // COMPLETE QUIZ
   async CompleteQuiz(call, callback) {
-    const { session_id, user_id } = call.request;
+    const { quiz_session_id, user_id } = call.request;
 
     try {
       const stats = await pool.query(
@@ -265,8 +266,8 @@ export const QuizService = {
           COUNT(*) as total,
           COUNT(*) FILTER (WHERE is_correct=true) as correct
          FROM quiz_answers
-         WHERE session_id=$1`,
-        [session_id],
+         WHERE quiz_session_id=$1`,
+        [quiz_session_id],
       );
 
       const total = parseInt(stats.rows[0].total);
@@ -279,11 +280,18 @@ export const QuizService = {
          SET status='completed',
          completed_at=NOW()
          WHERE id=$1 AND user_id=$2`,
-        [session_id, user_id],
+        [quiz_session_id, user_id],
+      );
+
+      await pool.query(
+        `INSERT INTO quiz_results
+         (quiz_session_id, total_questions, correct_answers, score_percentage, completed_at)
+         VALUES ($1, $2, $3, $4, NOW())`,
+        [quiz_session_id, total, correct, score],
       );
 
       callback(null, {
-        session_id,
+        quiz_session_id,
         total_questions: total,
         correct_answers: correct,
         score_percentage: score,

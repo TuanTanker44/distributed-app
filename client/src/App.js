@@ -10,6 +10,7 @@ import History from "./pages/user/History";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ProtectedRoute from "./ProtectedRoute";
+import { Navigate } from "react-router-dom";
 
 function App() {
   return (
@@ -17,25 +18,22 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Routes>
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<Dashboard />} />
-                  <Route path="users" element={<UserManager />} />
-                  <Route path="questions" element={<QuestionManager />} />
-                </Route>
-                <Route path="/user" element={<UserLayout />}>
-                  <Route index element={<CreateQuiz />} />
-                  <Route path="quiz" element={<QuizPage />} />
-                  <Route path="history" element={<History />} />
-                </Route>
-              </Routes>
-            </ProtectedRoute>
-          }
-        />
+
+        {/* protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="users" element={<UserManager />} />
+            <Route path="questions" element={<QuestionManager />} />
+          </Route>
+
+          <Route path="/user" element={<UserLayout />}>
+            <Route index element={<CreateQuiz />} />
+            <Route path="quiz" element={<QuizPage />} />
+            <Route path="history" element={<History />} />
+          </Route>
+        </Route>
       </Routes>
     </Router>
   );
