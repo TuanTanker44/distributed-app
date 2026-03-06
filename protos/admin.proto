@@ -2,10 +2,14 @@ syntax = "proto3";
 
 package admin;
 
+import "common.proto";
+import "google/protobuf/empty.proto";
+
 service AdminService {
     // User management
     rpc GetAllUsers(Empty) returns (UserList) {}
     rpc UpdateUserRole(UpdateUserRoleRequest) returns (User) {}
+    rpc UpdateUserStatus(UpdateUserStatusRequest) returns (User) {}
     rpc DeleteUser(DeleteUserRequest) returns (DeleteResponse) {}
     
     // Subject management
@@ -38,6 +42,11 @@ message UserList {
 message UpdateUserRoleRequest {
     int32 user_id = 1;
     string role = 2;
+}
+
+message UpdateUserStatusRequest {
+    int64 user_id = 1;
+    string status = 2;
 }
 
 message DeleteUserRequest {

@@ -1,3 +1,4 @@
+<<<<<<< HEAD:client/src/page/admin/Dashboard.js
 function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -24,4 +25,15 @@ function Dashboard() {
   );
 }
 
+=======
+function Dashboard() {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <p>Chào mừng bạn đến trang quản trị Quiz App.</p>
+    </div>
+  );
+}
+
+>>>>>>> bb47c3f139b0815a21706be3c0a8a9239e2acd60:client/src/pages/admin/Dashboard.js
 export default Dashboard;

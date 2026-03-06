@@ -2,18 +2,111 @@ syntax = "proto3";
 
 package user;
 
+import "common.proto";
+import "google/protobuf/empty.proto";
+
 service UserService {
-  rpc GetProfile (GetUserRequest) returns (GetUserResponse) {};
-  rpc UpdateProfile (UpdateProfileRequest) returns (UpdateProfileResponse) {};
+  // Profile
+  rpc GetProfile (GetProfileRequest) returns (UserResponse) {};
+  rpc UpdateProfile (UpdateProfileRequest) returns (UserResponse) {};
+
+  // Password
+  rpc ChangePassword(ChangePasswordRequest) returns (google.protobuf.Empty);
+
+  // Subject
+  rpc GetSubjects(google.protobuf.Empty) returns (SubjectListResponse);
+  rpc GetSubjectDetail(GetSubjectRequest) returns (SubjectResponse);
+
+  // Quiz history
+  rpc GetQuizHistory(GetQuizHistoryRequest) returns (QuizHistoryResponse);
+  rpc GetQuizResultDetail(GetQuizResultRequest) returns (QuizResultDetailResponse);
+
+  // Progress
+  rpc SaveProgress(SaveProgressRequest) returns (google.protobuf.Empty);
+  rpc GetSavedProgress(GetSavedProgressRequest) returns (ProgressResponse);
 }
 
-message GetUserRequest {
-  int64 id = 1;
+// Profile
+message GetProfileRequest {
+  int64 user_id = 1;
 }
 
-message GetUserResponse {
-  int64 id = 1;
+message UpdateProfileRequest {
+  int32 user_id = 1;
+  string username = 2;
+}
+
+message UserResponse {
+  int32 id = 1;
+  string email = 2;
+  string username = 3;
+  common.UserStatus status = 4;
+  common.UserRole role = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+// Password
+message ChangePasswordRequest {
+  int64 user_id = 1;
+  string old_password = 2;
+  string new_password = 3;
+}
+
+// Subject
+message SubjectResponse {
+  int32 id = 1;
   string name = 2;
-  string email = 3;
-  string created_at = 4;
+  string description = 3;
+}
+
+message SubjectListResponse {
+  repeated SubjectResponse subjects = 1;
+}
+
+message GetSubjectRequest {
+  int32 subject_id = 1;
+}
+
+// Quiz history
+message GetQuizHistoryRequest {
+  int32 user_id = 1;
+}
+
+message QuizHistoryResponse {
+  repeated QuizResult results = 1;
+}
+
+message QuizResult {
+  int32 quiz_session_id = 1;
+  int32 total_questions = 2;
+  int32 correct_answers = 3;
+  double score_percentage = 4;
+  string completed_at = 5;
+}
+
+message GetQuizResultRequest {
+  int32 quiz_session_id = 1;
+}
+
+message QuizResultDetailResponse {
+  int32 quiz_session_id = 1;
+  int32 total_questions = 2;
+  int32 correct_answers = 3;
+  double score_percentage = 4;
+  string completed_at = 5;
+}
+// Progress
+message SaveProgressRequest {
+  int32 quiz_session_id = 1;
+  string progress_data = 2; // JSON string (map từ JSONB)
+}
+
+message GetSavedProgressRequest {
+  int32 quiz_session_id = 1;
+}
+
+message ProgressResponse {
+  string progress_data = 1;
+  string saved_at = 2;
 }
